@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Minikube Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        #response {
+            font-size: 18px;
+            padding: 15px;
+            background-color: #e8f4f8;
+            border-radius: 4px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .loading {
+            color: #666;
+        }
+        .success {
+            color: #2e7e32;
+            font-weight: bold;
+        }
+        .error {
+            color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Frontend UI</h1>
+        <div id="response" class="loading">Loading backend data...</div>
+    </div>
+    
+    <script>
+        // Get minikube IP dynamically or use localhost for port-forward
+        const backendUrl = `http://${window.location.hostname}:30008/api`;
+        
+        fetch(backendUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const responseDiv = document.getElementById('response');
+                responseDiv.innerText = data.message;
+                responseDiv.className = 'success';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const responseDiv = document.getElementById('response');
+                responseDiv.innerText = 'Failed to load data from backend';
+                responseDiv.className = 'error';
+            });
+    </script>
+</body>
+</html>

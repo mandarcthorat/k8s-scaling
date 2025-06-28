@@ -1,0 +1,45 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-lb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-lb
+  template:
+    metadata:
+      labels:
+        app: nginx-lb
+    spec:
+      containers:
+      - name: nginx-lb
+        image: nginx:alpine
+        ports:
+        - containerPort: 5000
+        volumeMounts:
+        - name: nginx-lb-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+      volumes:
+      - name: nginx-lb-config
+        configMap:
+          name: nginx-lb-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-lb-config
+data:
+  nginx.conf: |
+    events {}
+    http {
+      resolver kube-dns.kube-system.svc.cluster.local valid=5s; # Use Kubernetes DNS
+      server {
+        listen 5000;
+        location / {
+          proxy_pass http://backend-service.default.svc.cluster.local:5000; # Direct proxy_pass
+        }
+      }
+    }

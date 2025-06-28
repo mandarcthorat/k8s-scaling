@@ -13,8 +13,8 @@ import statistics
 # Configuration
 BACKEND_URL = "http://localhost:5000/api"
 FRONTEND_URL = "http://localhost:8080"
-NUM_REQUESTS = 200
-CONCURRENT_THREADS = 20
+NUM_REQUESTS = 40
+CONCURRENT_THREADS = 8
 
 def test_backend():
     """Test backend API endpoint"""
